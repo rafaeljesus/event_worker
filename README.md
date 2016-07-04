@@ -3,7 +3,7 @@
 [![CircleCI](https://circleci.com/gh/rafaeljesus/event_worker.svg?style=svg)](https://circleci.com/gh/rafaeljesus/event_worker)
 [![Deps Status](https://beta.hexfaktor.org/badge/all/github/rafaeljesus/event_worker.svg)](https://beta.hexfaktor.org/github/rafaeljesus/event_worker)
 
-* Consumes a event payload from rabbitmq and recording any actions your system perform, along with any properties that describe the action
+* Consumes a event payload from rabbitmq and records any actions your system perform, along with any properties that describe the action
 * A minimal docker alpine container
 * Automatically pushes it to dockerhub if tests pass
 
