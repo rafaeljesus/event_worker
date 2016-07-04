@@ -1,0 +1,25 @@
+version: '2'
+services:
+  worker:
+    build: .
+    environment:
+      MONGO_PORT_27017_TCP_ADDR: "0.0.0.0"
+    command: iex -S mix
+    volumes:
+    - .:/event_worker
+    - .:/event_worker/deps
+    links:
+    - db
+    - rmq
+  db:
+    image: mongo
+    ports:
+    - "27017:27017"
+    volumes:
+    - /data/db2/:/data/db/
+    command: /usr/bin/mongod --smallfiles
+  rmq:
+    image: "rabbitmq:management"
+    hostname: "rmq"
+    ports:
+    - '15672:15672'
