@@ -41,8 +41,7 @@ defmodule EventWorker.Mixfile do
 
   defp description do
     """
-    Consumes a event payload from rabbitmq and recording any actions your system perform,
-    along with any properties that describe the action.
+    Consumes a event from rabbitmq and stores on mongodb.
     """
   end
 
