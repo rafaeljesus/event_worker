@@ -2,6 +2,11 @@ FROM aweiker/alpine-elixir
 
 ENV APP_NAME event_worker
 
+RUN apk update && \
+  apk upgrade && \
+  apk add erlang-xmerl && \
+  rm -rf /var/cache/apk/*
+
 COPY . /source
 WORKDIR /source
 
