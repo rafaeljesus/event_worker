@@ -14,6 +14,12 @@ cd event_worker
 mix deps.get
 ```
 
+## Env Vars
+```
+export MESSAGE_BROKER_HOST=localhost
+export MESSAGE_BROKER_VHOST=events
+```
+
 ## Running server
 To start the serve execute:
 ```bash
