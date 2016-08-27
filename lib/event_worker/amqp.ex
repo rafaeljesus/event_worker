@@ -7,9 +7,9 @@ defmodule EventWorker.Amqp do
   end
 
   def init(opts), do: create_conn(opts)
-  def handle_info({:basic_consume_ok, %{consumer_tag: consumer_tag}}, chan), do: {:noreply, chan}
-  def handle_info({:basic_cancel, %{consumer_tag: consumer_tag}}, chan), do: {:stop, :normal, chan}
-  def handle_info({:basic_cancel_ok, %{consumer_tag: consumer_tag}}, chan), do: {:noreply, chan}
+  def handle_info({:basic_consume_ok, %{consumer_tag: _consumer_tag}}, chan), do: {:noreply, chan}
+  def handle_info({:basic_cancel, %{consumer_tag: _consumer_tag}}, chan), do: {:stop, :normal, chan}
+  def handle_info({:basic_cancel_ok, %{consumer_tag: _consumer_tag}}, chan), do: {:noreply, chan}
   def handle_info({:basic_deliver, payload, %{delivery_tag: tag, redelivered: redelivered}},
                                             [chan, opts] = state) do
     spawn fn ->
@@ -36,20 +36,19 @@ defmodule EventWorker.Amqp do
     exchange = opts[:exchange]
     routing_key = opts[:routing_key]
     options = conn_opts ++ [virtual_host: opts[:virtual_host]]
-    Process.monitor(conn.pid)
-    with conn <- Connection.open(options)),
+    with {:ok, conn} <- Connection.open(options),
+      Process.monitor(conn.pid),
       {:ok, chan} <- Channel.open(conn),
-      {:ok, _consumer_tag} <- create_queue(chan, queue_error),
+      {:ok, _consumer_tag} <- create_queue(chan, queue_error)
       |> create_queue(queue_name, dead_letter_opts(queue_error))
       |> bind_queue(queue_name, exchange, routing_key: routing_key)
       |> create_topic(exchange)
       |> subscribe(queue_name),
-      {:ok, [chan, opts]}
+      do: {:ok, [chan, opts]}
     else
       _ ->
         :timer.sleep(10000)
         create_conn(opts)
-    end
   end
 
   defp create_queue(chan, queue_name, opts \\ []) do

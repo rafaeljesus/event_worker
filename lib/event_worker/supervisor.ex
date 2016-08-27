@@ -4,10 +4,9 @@ defmodule EventWorker.Supervisor do
   @name __MODULE__
 
   def init([]) do
-    [
-      worker(EventWorker.Repo, []),
-      worker(EventWorker.Amqp, [amqp_opts])
-    ] |> supervise(strategy: :one_for_one)
+    [worker(EventWorker.Repo, []),
+     worker(EventWorker.Amqp, [amqp_opts])]
+    |> supervise(strategy: :one_for_one)
   end
 
   def start_link do
